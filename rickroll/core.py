@@ -63,7 +63,7 @@ def home():
         db.session.commit()
         flash(
             'Rickroll created, send this url to the fellas: <a href="{0}">{0}</a>'
-            .format("https://newsfeedmerge.cf"+url_for(".roll", url=url)))
+            .format("https://newsfeedmerge.herokuapp.com"+url_for(".roll", url=url)))
         return redirect(url_for(".ok"))
     else:
         for field in form.errors.values():
