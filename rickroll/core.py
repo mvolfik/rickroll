@@ -17,7 +17,7 @@ class CreateRickrollForm(FlaskForm):
         'Title',
         validators=[
             DataRequired("You need to provide a title"),
-            Length(max=32, message="Title can't be longer than 32 characters")
+            Length(max=64, message="Title can't be longer than 64 characters")
         ])
     imgurl = URLField(
         'Preview image URL',
