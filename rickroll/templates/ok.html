@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Rickroll created</title>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                  <p>{{ message | safe }}</p>
+              {% endfor %}
+              {% endif %}
+        {% endwith %}
+   </body>
+</html>

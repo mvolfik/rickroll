@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Rickroll creator</title>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                  {% for message in messages %}
+                      <li>{{ message | safe }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+        {% endwith %}
+        <form method="POST">
+            {{ form.title.label }} {{ form.title(size=32) }}
+            {{ form.imgurl.label }} {{ form.imgurl(size=32) }}
+            <input type="submit" value="Create!" />
+        </form>
+   </body>
+</html>
