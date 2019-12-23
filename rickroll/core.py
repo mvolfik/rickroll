@@ -62,8 +62,8 @@ def home():
         db.session.add(rr)
         db.session.commit()
         flash(
-            'Rickroll created, send this url to the fellas: <a href="{0}">https://newsfeedmerge.cf{0}</a>'
-            .format(url_for(".roll", url=url)))
+            'Rickroll created, send this url to the fellas: <a href="{0}">{0}</a>'
+            .format("https://newsfeedmerge.cf"+url_for(".roll", url=url)))
         return redirect(url_for(".ok"))
     else:
         for field in form.errors.values():
