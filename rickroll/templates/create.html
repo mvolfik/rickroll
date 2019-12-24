@@ -2,6 +2,43 @@
 <html>
     <head>
         <title>Rickroll creator</title>
+        <style>
+
+        #formgrid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 1em;
+        }
+        label {
+            margin: auto 0 auto auto;
+        }
+        #buttongrid {
+            display: grid;
+            grid-template-columns: repeat(3, max-content);
+            grid-column-gap: 0.5em;
+            grid-row-gap: 0.2em;
+            margin-left: 1em;
+        }
+        #buttongrid a, #buttongrid button {
+            font-size: 1rem;
+            font-family: sans-serif;
+            padding: 4px 8px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            background-color: white;
+            color: black;
+            border: 2px solid hsl(122,57%,55%);
+            border-radius: 5px
+        }
+        #buttongrid a:hover, #buttongrid button:hover {
+            background-color: hsl(122,57%,55%);
+            border-color: hsl(122,70%,40%);
+            color: white;
+        }
+        </style>
     </head>
     <body>
         {% with messages = get_flashed_messages() %}
@@ -14,9 +51,22 @@
               {% endif %}
         {% endwith %}
         <form method="POST">
-            {{ form.title.label }} {{ form.title(size=32) }}
-            {{ form.imgurl.label }} {{ form.imgurl(size=32) }}
-            <input type="submit" value="Create!" />
+            <div id="formgrid">
+                {{ form.title.label }} {{ form.title }}
+                {{ form.imgurl.label }} {{ form.imgurl }}
+                {{ form.redirecturl.label }} {{ form.redirecturl(id="redirecturl") }}
+            </div>
+            <p><input type="submit" value="Create!" /></p>
         </form>
+        {% if rickrolls %}
+            <p>Autofill redirect URL:</p>
+            <div id="buttongrid">
+                {% for title, url in rickrolls.items() %}
+                    <label>{{ title }}</label>
+                    <button type="button" onclick='redirecturl.value="{{ url }}"'>Fill</button>
+                    <a href="{{ url }}" target="_blank">Preview</a>
+                {% endfor %}
+            </div>
+        {% endif %}
    </body>
 </html>

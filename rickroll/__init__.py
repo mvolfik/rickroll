@@ -10,6 +10,16 @@ def create_app():
     app.config['WTF_CSRF_ENABLED'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY',
                                               "FALLBACK USED IN DEV INSTANCES")
+    app.config['RICKROLL_URLS'] = {
+        'Rickroll':
+        'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        'Wreck-it-Ralph-roll':
+        'https://www.youtube.com/watch?v=4JZSJ49gVJw',
+        'Jebait':
+        'https://www.youtube.com/watch?v=oGJr5N2lgsQ',
+        'Duckroll':
+        'https://i.kym-cdn.com/photos/images/original/000/002/941/Duckroll.jpg'
+    }
     from .db import db
     db.init_app(app)
 
