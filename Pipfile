@@ -14,4 +14,4 @@ psycopg2-binary = "*"
 python-slugify = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
