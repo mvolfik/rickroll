@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, url_for, redirect, current_app
+from flask import Blueprint, render_template, flash, url_for, redirect, current_app, session, request, get_flashed_messages
 from flask_wtf import FlaskForm
 from wtforms import ValidationError
 from wtforms.fields import StringField
@@ -8,8 +8,25 @@ import urllib.request
 from .db import Rickroll, db
 from random import randrange
 from slugify import slugify
+from collections import defaultdict
 
 bp = Blueprint('core', __name__)
+
+
+@bp.app_template_global()
+def get_grouped_flashes():
+    msgs = get_flashed_messages(with_categories=True)
+    groups = defaultdict(list)
+    for group, msg in msgs:
+        groups[group].append(msg)
+    return groups
+
+
+@bp.app_template_global()
+def get_redirect_title(url):
+    return next(
+        (k for k, v in current_app.config.get('RICKROLL_URLS', {}).items()
+         if v == url), url)
 
 
 class CreateRickrollForm(FlaskForm):
@@ -80,29 +97,50 @@ def home():
         db.session.add(rr)
         db.session.commit()
         flash(
-            'Rickroll created, send this url to the fellas: <a href="{0}">{0}</a>'
-            .format("https://newsfeedmerge.herokuapp.com" +
-                    url_for(".roll", url=url)))
-        return redirect(url_for(".ok"))
+            'Rickroll created, send this url to the fellas:<br /><a href="{0}">{1}</a>'
+            .format(
+                url_for(".roll", url=url),
+                url_for(".roll", url=url, _external=True)), "#4bb543")
+        if 'rickrolls' not in session:
+            session['rickrolls'] = [url]
+        else:
+            session['rickrolls'].append(url)
+            session.modified = True  # session change is not picked up automatically because a mutable object is changed
+        session.permanent = True
+        return redirect(url_for(".list_rickrolls"), 303)
     else:
         for field in form.errors.values():
             for e in field:
-                flash(e)
+                flash(e, "#f99")
     return render_template(
         "create.html",
         form=form,
         rickrolls=current_app.config.get('RICKROLL_URLS', None))
 
 
-@bp.route('/ok')
-def ok():
-    return render_template("ok.html")
+@bp.route('/list')
+def list_rickrolls():
+    return render_template(
+        "list.html",
+        rickrolls=[
+            Rickroll.query.get(url) for url in session.get("rickrolls", [])
+        ])
+
+
+@bp.route('/delete', methods=("POST",))
+def delete():
+    db.session.delete(Rickroll.query.get(request.form['id']))
+    db.session.commit()
+    flash("Deleted sucessfully", "#ff6700")
+    session['rickrolls'].remove(request.form['id'])
+    session.modified = True
+    return redirect(url_for(".list_rickrolls"), 303)
 
 
 @bp.route('/BBC/<url>')
 def roll(url):
     try:
-        fn = Rickroll.query.filter_by(url=url).first()
+        fn = Rickroll.query.get(url)
         return render_template(
             "roll.html",
             title=fn.title,

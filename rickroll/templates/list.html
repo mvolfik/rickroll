@@ -1,0 +1,84 @@
+{% extends "_base.html" %}
+{% block style %}           
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td, th {
+        text-align: center;
+        margin: 0;
+        padding: 0.1em 0.4em;
+    }
+    th:first-child {
+        border-right: 2px dotted #bbb;
+        text-align: right;
+        font-style: italic;
+        font-weight: normal;
+    }
+    tbody input, tbody button {
+        margin: 0 0.2em;
+        font-size: 1rem;
+        font-family: sans-serif;
+        padding: 4px 8px;
+        text-align: center;
+        text-decoration: none;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        background-color: white;
+        color: black;
+        border: 4px double hsl(122,70%,45%);
+        border-radius: 5px
+    }
+    tbody input {
+        border: 4px double hsl(5,70%,45%);
+    }
+    tbody button:hover {
+        background-color: hsl(122,57%,55%);
+        border-color: hsl(122,70%,20%);
+        color: white;
+    }
+    tbody input:hover {
+        background-color: hsl(5,57%,55%);
+        border-color: hsl(5,70%,20%);
+        color: white;
+    }
+    thead th {
+        font-style: normal !important;
+        font-weight: bold !important;
+        border-bottom: 10px double #aaa;
+    }
+    tbody th, tbody td {
+        border-bottom: 1px solid #aaa;
+    }
+    td form {
+        display: inline;
+    }
+{% endblock %}
+{% block body %}
+    {% if rickrolls is not none and rickrolls|length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Link</th>
+                    <th>Image</th>
+                    <th>Redirect to</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rickroll in rickrolls %}
+                    <tr>
+                        <th>{{ rickroll.title }}</th>
+                        <td><a href="{{ url_for('core.roll', url=rickroll.url) }}" target="_blank">{{ rickroll.url }}</a></td>
+                        <td><a href="{{ rickroll.imgurl }}" target="_blank">{{ rickroll.imgurl }}</a></td>
+                        <td><a href="{{ rickroll.redirecturl }}" target="_blank">{{ get_redirect_title(rickroll.redirecturl) }}</a></td>
+                        <td><button onblur='b=this.offsetWidth;this.innerHTML = "Copied!";this.style.width = `${b}px`;a=this;setTimeout(function() {a.innerHTML = "Copy link"}, 1000);' type="button" class="copy" data-clipboard-text="{{ url_for('core.roll', url=rickroll.url, _external=True) }}">Copy link</button><form onsubmit="return confirm('Are you sure you want to delete this one? The URL becomes an oopsie...')" action="{{ url_for('core.delete') }}" method="POST"><input type="hidden" name="id" value="{{ rickroll.url }}" /><input type="submit" value="Delete" /></form></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't created any rickrolls yet...</p>
+    {% endif %}
+{% endblock %}

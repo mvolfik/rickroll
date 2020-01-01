@@ -1,5 +1,6 @@
 from flask import Flask
 import os
+from datetime import timedelta
 
 
 def create_app():
@@ -10,6 +11,7 @@ def create_app():
     app.config['WTF_CSRF_ENABLED'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY',
                                               "FALLBACK USED IN DEV INSTANCES")
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=365)
     app.config['RICKROLL_URLS'] = {
         'Rickroll':
         'https://www.youtube.com/watch?v=dQw4w9WgXcQ',

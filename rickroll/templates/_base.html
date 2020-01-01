@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Rickroll</title>
+        <style>
+            a.ext, td a {
+                background: linear-gradient(transparent,transparent),url(https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/External.svg/13px-External.svg.png) top right no-repeat;
+                padding-right: 15px;
+                color: #06d;
+            }
+            {% block style %}{% endblock %}
+        </style>
+    </head>
+    <body>
+        <p>Navigation: <a href="{{ url_for('core.home') }}">Homepage</a> | <a href="{{ url_for('core.list_rickrolls') }}">List of my rickrolls</a></p>
+        {% with d = get_grouped_flashes() %}
+            {% if d %}
+                {% for group in d %}
+                    <div style="min-width:30%;width:max-content;margin-bottom:0.6em;padding:0.1em 1.5em 0.1em 0.5em;border-radius:0.3em 0.5em 3em 1em;background-color:{{ group }};">
+                        {% for message in d[group] %}
+                            <p>{{ message | safe }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+        <script>
+            new ClipboardJS('button[data-clipboard-text]');
+        </script>
+   </body>
+</html>
