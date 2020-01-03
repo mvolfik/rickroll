@@ -141,6 +141,8 @@ def delete():
 def roll(url):
     try:
         fn = Rickroll.query.get(url)
+        fn.rollcount += 1
+        db.session.commit()
         return render_template(
             "roll.html",
             title=fn.title,
