@@ -15,9 +15,10 @@ def create_app():
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
     app.config["RICKROLL_URLS"] = {
         "Rickroll": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        "Wreck-it-Ralph-roll": "https://www.youtube.com/watch?v=4JZSJ49gVJw",
+        "Wreck-it-Ralph-roll": "https://www.youtube.com/watch?v=ptw2FLKXDQE",
         "Jebait": "https://www.youtube.com/watch?v=oGJr5N2lgsQ",
         "Duckroll": "https://i.kym-cdn.com/photos/images/original/000/002/941/Duckroll.jpg",
+        "Gamecube distraction": "https://www.youtube.com/watch?v=T3qrj4B08sc",
     }
     from .db import db
 
