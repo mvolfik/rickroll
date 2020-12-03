@@ -42,21 +42,13 @@ def get_redirect_title(url):
 
 class CreateRickrollForm(FlaskForm):
     title = StringField(
-        "Title",
-        validators=[
-            DataRequired("You need to provide a title"),
-            Length(max=64, message="Title can't be longer than 64 characters"),
-        ],
+        "Title", validators=[DataRequired("You need to provide a title"),]
     )
     imgurl = URLField(
         "Preview image URL",
         validators=[
             DataRequired("You need to provide a preview image"),
             URL("The image URL doesn't seem valid..."),
-            Length(
-                max=1024,
-                message="The image URL is too long, please find a different image",
-            ),
         ],
     )
     redirecturl = URLField(
@@ -66,32 +58,8 @@ class CreateRickrollForm(FlaskForm):
                 "You need to provide a URL to redirect to, use the buttons for inspiration"
             ),
             URL("The redirect URL doesn't seem valid..."),
-            Length(
-                max=1024,
-                message="The redirect URL is too long, please user different target or a URL shortener like bit.ly",
-            ),
         ],
     )
-
-    def validate_imgurl(_, field):
-        ok = False
-        try:
-            if urllib.request.urlopen(
-                urllib.request.Request(
-                    field.data,
-                    headers={
-                        "Accept": "*/*",
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
-                    },
-                    method="HEAD",
-                )
-            ).info()["content-type"] in ("image/png", "image/jpeg", "image/gif"):
-                ok = True
-        finally:
-            if not ok:
-                raise ValidationError(
-                    "The URL you provided doesn't seem to point to an image..."
-                )
 
 
 @bp.route("/", methods=("GET", "POST"))
@@ -99,7 +67,7 @@ def home():
     form = CreateRickrollForm()
     if form.validate_on_submit():
         url = (
-            slugify(form.title.data, max_length=48, word_boundary=True, save_order=True)
+            slugify(form.title.data, max_length=64, word_boundary=True, save_order=True)
             + "-"
             + str(randrange(10000, 100000))
         )
@@ -139,7 +107,9 @@ def home():
 def list_rickrolls():
     return render_template(
         "list.html",
-        rickrolls=[Rickroll.query.get(url) for url in session.get("rickrolls", [])],
+        rickrolls=Rickroll.query.filter(
+            Rickroll.url.in_(session.get("rickrolls", []))
+        ).all(),
     )
 
 
