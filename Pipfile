@@ -10,7 +10,7 @@ flask = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
 flask-wtf = "*"
-psycopg2-binary = "*"
+psycopg2 = "*"
 python-slugify = "*"
 
 [requires]
