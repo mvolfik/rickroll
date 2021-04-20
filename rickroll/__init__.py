@@ -6,7 +6,10 @@ from datetime import timedelta
 def create_app():
     app = Flask(__name__)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", None)
+    db_uri = os.environ["DATABASE_URL"]
+    if db_uri.startswith("postgres://"):
+        db_uri = "postgresql+psycopg2" + db_uri[8:]
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["WTF_CSRF_ENABLED"] = False
     app.config["SECRET_KEY"] = os.environ.get(
